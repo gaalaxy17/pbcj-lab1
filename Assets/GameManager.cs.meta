@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: c4427071a8182244eabe7cda765c1bac
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - letter: {fileID: 5890574003679709174, guid: 72fe3e7d65095ef448e8ffa66b76fac0, type: 3}
+  - successMessage: {fileID: 4275002445785124215, guid: dec1acbaf4cd0c940919230082b65f9d, type: 3}
+  - successMusic: {fileID: 6613094633668070814, guid: 67ee960205edf304bbf264bee0cfcbe5, type: 3}
+  - screenCenter: {instanceID: 0}
+  - backgroundMusic: {fileID: 7909728115730116268, guid: 5ba0d7a5d96550a438b90aa707aa91a6, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
