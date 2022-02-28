@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class ManageButtons : MonoBehaviour
+public class ManageEnd : MonoBehaviour
 {
     public GameObject message;
     public GameObject lastHiddenWord; // Palavra selecionada
