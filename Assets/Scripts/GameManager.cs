@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
         InputLetter();
     }
 
-    // Instancia os espaços (interrogações na tela) para a palavra
+    // Instancia os espaï¿½os (interrogaï¿½ï¿½es na tela) para a palavra
     void InitLetters()
     {
         List<char> hiddenLetters = new List<char>(this.word.ToCharArray());
@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Atualiza pontuação e tentativas
+    // Atualiza pontuaï¿½ï¿½o e tentativas
     void updateScoreAndTries()
     {
         scoreDisplay.GetComponent<Text>().text = $"Score {scoreCount}";
@@ -87,7 +87,7 @@ public class GameManager : MonoBehaviour
         pickRandomWord();
     }
 
-    // Escolhe palavra aleatória do arquivo words.txt
+    // Escolhe palavra aleatï¿½ria do arquivo words.txt
     private void pickRandomWord()
     {
         GameObject.Find("backgroundMusic").GetComponent<AudioSource>().enabled = true;
@@ -97,7 +97,7 @@ public class GameManager : MonoBehaviour
         this.word = word.ToUpper();
     }
 
-    // Instancia objetos de texto para tentativas e pontuação
+    // Instancia objetos de texto para tentativas e pontuaï¿½ï¿½o
     private void createScoreAndTries()
     {
         float canvasHeight = GameObject.Find("Canvas").GetComponent<RectTransform>().rect.height;
@@ -148,13 +148,16 @@ public class GameManager : MonoBehaviour
     // Verifica se o jogo acabou
     void CheckGameEnd()
     {
+
         if (scoreCount == this.letters.Count)
         {
+            PlayerPrefs.SetString("lastHiddenWord", this.word);
             PlayerPrefs.SetString("status", "victory");
             SceneManager.LoadScene("Lab1_end");
         }
         else if (triesCount >= maxTries)
         {
+            PlayerPrefs.SetString("lastHiddenWord", this.word);
             PlayerPrefs.SetString("status", "defeat");
             SceneManager.LoadScene("Lab1_end");
         }
