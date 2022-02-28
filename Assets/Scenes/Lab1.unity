@@ -320,6 +320,8 @@ MonoBehaviour:
   successMusic: {fileID: 6613094633668070814, guid: 67ee960205edf304bbf264bee0cfcbe5, type: 3}
   screenCenter: {fileID: 0}
   backgroundMusic: {fileID: 7909728115730116268, guid: 5ba0d7a5d96550a438b90aa707aa91a6, type: 3}
+  score: {fileID: 2062851964929407220, guid: 9ce621aa0e64af84ea2520856f24e900, type: 3}
+  tries: {fileID: 8832482373182121896, guid: 07f34ae797f40444d92dae17cfa4a82f, type: 3}
 --- !u!1 &855540374
 GameObject:
   m_ObjectHideFlags: 0
