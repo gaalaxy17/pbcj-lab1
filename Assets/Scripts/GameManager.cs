@@ -17,7 +17,6 @@ public class GameManager : MonoBehaviour
     public GameObject successMessage;
     public GameObject successMusic;
     public GameObject screenCenter;
-    public GameObject backgroundMusic;
     public GameObject score;
     public GameObject tries;
 
@@ -77,11 +76,6 @@ public class GameManager : MonoBehaviour
     // Instancia objetos iniciais para funcionamento do jogo
     void InitGame()
     {
-        Vector3 newPos = new Vector3(screenCenter.transform.position.x, screenCenter.transform.position.y + 100, screenCenter.transform.position.z);
-        GameObject bgm = (GameObject)Instantiate(this.backgroundMusic, newPos, Quaternion.identity);
-        bgm.name = "backgroundMusic";
-        bgm.transform.SetParent(GameObject.Find("Canvas").transform);
-
         createScoreAndTries();
 
         pickRandomWord();
@@ -90,7 +84,6 @@ public class GameManager : MonoBehaviour
     // Escolhe palavra aleat�ria do arquivo words.txt
     private void pickRandomWord()
     {
-        GameObject.Find("backgroundMusic").GetComponent<AudioSource>().enabled = true;
         StreamReader sr = new StreamReader("Assets/words.txt");
         string allWords = sr.ReadToEnd();
         this.word = allWords.Split(' ')[Random.Range(0, allWords.Split(' ').Length)];
@@ -127,6 +120,11 @@ public class GameManager : MonoBehaviour
                 {
                     if (l.content.ToString().ToUpper().Equals(input.ToString().ToUpper()))
                     {
+                        GameObject.Find("successSound").GetComponent<AudioSource>().Play();
+                        if(Random.Range(0, 20) > 15)
+                        {
+                            GameObject.Find("veryNiceSound").GetComponent<AudioSource>().Play();
+                        }
                         l.isHidden = false;
                         GameObject.Find(l.id).GetComponent<Text>().text = input.ToString().ToUpper();
                         found = true;
@@ -135,8 +133,16 @@ public class GameManager : MonoBehaviour
                 });
                 if (!found && !this.wrongLetters.Contains(input))
                 {
+                    GameObject.Find("errorSound").GetComponent<AudioSource>().Play();
                     this.wrongLetters.Add(input);
                     triesCount++;
+
+                    //if(triesCount == 8)
+                    //{
+                    //    GameObject.Find("playingSong").GetComponent<AudioSource>().Stop();
+                    //    GameObject.Find("sadPlayingSong").GetComponent<AudioSource>().Play();
+                    //}
+
                 }
             }
             CheckGameEnd();

@@ -31,10 +31,13 @@ public class ManageEnd : MonoBehaviour
     public void HandleStatusCondition(string statusValue)
     {
         if(statusValue == "victory"){
+            GameObject.Find("congratulationsSound").GetComponent<AudioSource>().Play();
+            GameObject.Find("successMusic").GetComponent<AudioSource>().Play();
             this.message.GetComponent<Text>().color = Color.green;
             this.message.GetComponent<Text>().text = "U WIN";
         }
         else{
+            GameObject.Find("defeatMusic").GetComponent<AudioSource>().Play();
             this.message.GetComponent<Text>().color = Color.red; 
             this.message.GetComponent<Text>().text = "U LOOSE";
         }
