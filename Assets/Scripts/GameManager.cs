@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Response
@@ -16,8 +18,17 @@ public class GameManager : MonoBehaviour
     public GameObject successMusic;
     public GameObject screenCenter;
     public GameObject backgroundMusic;
+    public GameObject score;
+    public GameObject tries;
 
-    private HttpClient httpClient = new HttpClient();
+    private GameObject scoreDisplay;
+    private GameObject triesDisplay;
+
+    private const int maxTries = 10;
+    private int triesCount = 0;
+    private int scoreCount = 0;
+    private List<char> usedLetters = new List<char>();
+
     private string word;
     List<Letter> letters = new List<Letter>();
     List<char> wrongLetters = new List<char>();
@@ -36,34 +47,9 @@ public class GameManager : MonoBehaviour
         InputLetter();
     }
 
-
+    // Instancia os espaços (interrogações na tela) para a palavra
     void InitLetters()
     {
-        for (int i = 0; i < this.letters.Count; i++)
-        {
-            Vector3 newPos = new Vector3(screenCenter.transform.position.x + ((i - this.letters.Count / 2.0f) * 80), screenCenter.transform.position.y, screenCenter.transform.position.z);
-            GameObject letter = (GameObject)Instantiate(this.letter, newPos, Quaternion.identity);
-            letter.name = this.letters[i].id;
-            letter.transform.SetParent(GameObject.Find("Canvas").transform);
-        }
-    }
-
-    void InitGame()
-    {
-        Vector3 newPos = new Vector3(screenCenter.transform.position.x, screenCenter.transform.position.y + 100, screenCenter.transform.position.z);
-        GameObject bgm = (GameObject)Instantiate(this.backgroundMusic, newPos, Quaternion.identity);
-        bgm.name = "backgroundMusic";
-        bgm.transform.SetParent(GameObject.Find("Canvas").transform);
-        GameObject.Find("backgroundMusic").GetComponent<AudioSource>().enabled = true;
-
-        HttpResponseMessage resp = this.httpClient.GetAsync("https://random-word-form.herokuapp.com/random/animal").GetAwaiter().GetResult();
-        string JSONToParse = "{\"words\":" + resp.Content.ReadAsStringAsync().GetAwaiter().GetResult() + "}";
-
-        Response respSer = JsonUtility.FromJson<Response>(JSONToParse);
-
-        this.word = respSer.words[0];
-        this.word = word.ToUpper();
-
         List<char> hiddenLetters = new List<char>(this.word.ToCharArray());
         for (int i = 0; i < hiddenLetters.Count; i++)
         {
@@ -71,84 +57,115 @@ public class GameManager : MonoBehaviour
             l.id = $"letter_{i + 1}";
             l.content = hiddenLetters[i];
             l.isHidden = true;
+            
+            Vector3 newPos = new Vector3(screenCenter.transform.position.x + ((i - hiddenLetters.Count / 2.0f) * 80), screenCenter.transform.position.y, screenCenter.transform.position.z);
+            GameObject letter = (GameObject)Instantiate(this.letter, newPos, Quaternion.identity);
+            letter.name = l.id;
+            letter.transform.SetParent(GameObject.Find("Canvas").transform);
 
             this.letters.Add(l);
         }
     }
 
+    // Atualiza pontuação e tentativas
+    void updateScoreAndTries()
+    {
+        scoreDisplay.GetComponent<Text>().text = $"Score {scoreCount}";
+        triesDisplay.GetComponent<Text>().text = $"{triesCount} | {maxTries}";
+    }
+
+    // Instancia objetos iniciais para funcionamento do jogo
+    void InitGame()
+    {
+        Vector3 newPos = new Vector3(screenCenter.transform.position.x, screenCenter.transform.position.y + 100, screenCenter.transform.position.z);
+        GameObject bgm = (GameObject)Instantiate(this.backgroundMusic, newPos, Quaternion.identity);
+        bgm.name = "backgroundMusic";
+        bgm.transform.SetParent(GameObject.Find("Canvas").transform);
+
+        createScoreAndTries();
+
+        pickRandomWord();
+    }
+
+    // Escolhe palavra aleatória do arquivo words.txt
+    private void pickRandomWord()
+    {
+        GameObject.Find("backgroundMusic").GetComponent<AudioSource>().enabled = true;
+        StreamReader sr = new StreamReader("Assets/words.txt");
+        string allWords = sr.ReadToEnd();
+        this.word = allWords.Split(' ')[Random.Range(0, allWords.Split(' ').Length)];
+        this.word = word.ToUpper();
+    }
+
+    // Instancia objetos de texto para tentativas e pontuação
+    private void createScoreAndTries()
+    {
+        float canvasHeight = GameObject.Find("Canvas").GetComponent<RectTransform>().rect.height;
+        float canvasWidth = GameObject.Find("Canvas").GetComponent<RectTransform>().rect.width;
+        Vector3 topLeft = new Vector3(0, canvasHeight);
+        Vector3 topright = new Vector3(canvasWidth, canvasHeight);
+        scoreDisplay = (GameObject)Instantiate(this.score, topLeft, Quaternion.identity);
+        scoreDisplay.transform.SetParent(GameObject.Find("Canvas").transform);
+        triesDisplay = (GameObject)Instantiate(this.tries, topright, Quaternion.identity);
+        triesDisplay.transform.SetParent(GameObject.Find("Canvas").transform);
+        updateScoreAndTries();
+    }
+
+    // Trata input de letra
     void InputLetter()
     {
-        if (Input.anyKeyDown)
+        if (Input.anyKeyDown && Input.inputString != "")
         {
             char input = Input.inputString.ToCharArray()[0];
+            if (usedLetters.Contains(input)) return;
+            usedLetters.Add(input);
             int asciInput = System.Convert.ToInt32(input);
-            //if(asciInput >= 97 && asciInput <= 122)
-            //{
-            bool found = false;
+            if (asciInput >= 97 && asciInput <= 122)
+            {
+                bool found = false;
                 this.letters.ForEach(l =>
                 {
                     if (l.content.ToString().ToUpper().Equals(input.ToString().ToUpper()))
                     {
                         l.isHidden = false;
-                        if(asciInput == 32)
-                        {
-                            GameObject.Find(l.id).GetComponent<Text>().text = "_";
-                        }
-                        else
-                        {
-                            GameObject.Find(l.id).GetComponent<Text>().text = input.ToString().ToUpper();
-                        }
+                        GameObject.Find(l.id).GetComponent<Text>().text = input.ToString().ToUpper();
                         found = true;
+                        scoreCount++;
                     }
                 });
-            if (!found)
-            {
-                if (!this.wrongLetters.Contains(input))
+                if (!found && !this.wrongLetters.Contains(input))
                 {
                     this.wrongLetters.Add(input);
+                    triesCount++;
                 }
-                
             }
-            //}
             CheckGameEnd();
-            CheckWrongLetter();
+            ShowWrongLetter();
+            updateScoreAndTries();
         }
     }
 
+    // Verifica se o jogo acabou
     void CheckGameEnd()
     {
-        int count = this.letters.Count;
-        int matched = 0;
-
-        this.letters.ForEach(l =>
+        if (scoreCount == this.letters.Count)
         {
-            if (!l.isHidden) matched++;
-        });
-
-        if (matched.Equals(count))
+            PlayerPrefs.SetString("status", "victory");
+            SceneManager.LoadScene("Lab1_end");
+        }
+        else if (triesCount >= maxTries)
         {
-            
-            if (!GameObject.Find("successMusic"))
-            {
-                Vector3 newPos = new Vector3(screenCenter.transform.position.x, screenCenter.transform.position.y + 100, screenCenter.transform.position.z);
-                GameObject sm = (GameObject)Instantiate(this.successMessage, newPos, Quaternion.identity);
-                sm.name = "successMessage";
-                sm.transform.SetParent(GameObject.Find("Canvas").transform);
-
-                GameObject smusic = (GameObject)Instantiate(this.successMusic, newPos, Quaternion.identity);
-                smusic.name = "successMusic";
-                smusic.transform.SetParent(GameObject.Find("Canvas").transform);
-
-                GameObject.Find("backgroundMusic").GetComponent<AudioSource>().enabled = false;
-            }
+            PlayerPrefs.SetString("status", "defeat");
+            SceneManager.LoadScene("Lab1_end");
         }
     }
 
-    void CheckWrongLetter()
+    // Exibe letra errada na tela
+    void ShowWrongLetter()
     {
         for (int i = 0; i < this.wrongLetters.Count; i++)
         {
-            Vector3 newPos = new Vector3(screenCenter.transform.position.x - 500 + (i*80), screenCenter.transform.position.y + 200, screenCenter.transform.position.z);
+            Vector3 newPos = new Vector3(screenCenter.transform.position.x - 500 + (i * 80), screenCenter.transform.position.y + 200, screenCenter.transform.position.z);
             string name = $"wrongLetter_{this.wrongLetters[i]}";
 
             if (!GameObject.Find(name))
@@ -160,7 +177,7 @@ public class GameManager : MonoBehaviour
                 sm.GetComponent<Text>().color = Color.red;
             }
         }
-        
+
     }
 
 }
