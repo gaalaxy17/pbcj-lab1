@@ -18,7 +18,6 @@ public class GameManager : MonoBehaviour
     public GameObject backgroundMusic;
 
     private HttpClient httpClient = new HttpClient();
-
     private string word;
     List<Letter> letters = new List<Letter>();
     List<char> wrongLetters = new List<char>();
@@ -36,6 +35,7 @@ public class GameManager : MonoBehaviour
     {
         InputLetter();
     }
+
 
     void InitLetters()
     {
