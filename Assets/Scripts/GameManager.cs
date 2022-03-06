@@ -95,8 +95,8 @@ public class GameManager : MonoBehaviour
     {
         float canvasHeight = GameObject.Find("Canvas").GetComponent<RectTransform>().rect.height;
         float canvasWidth = GameObject.Find("Canvas").GetComponent<RectTransform>().rect.width;
-        Vector3 topLeft = new Vector3(0, canvasHeight);
-        Vector3 topright = new Vector3(canvasWidth, canvasHeight);
+        Vector3 topLeft = new Vector3(20, canvasHeight - 20);
+        Vector3 topright = new Vector3(canvasWidth - 20, canvasHeight - 20);
         scoreDisplay = (GameObject)Instantiate(this.score, topLeft, Quaternion.identity);
         scoreDisplay.transform.SetParent(GameObject.Find("Canvas").transform);
         triesDisplay = (GameObject)Instantiate(this.tries, topright, Quaternion.identity);
