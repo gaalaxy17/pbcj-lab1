@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+// Gerencia a tela de créditos
 public class ManageCredits : MonoBehaviour
 {
 
@@ -19,6 +20,7 @@ public class ManageCredits : MonoBehaviour
   
     }
 
+    // Retorna para a cena de início
     public void Menu()
     {
         SceneManager.LoadScene("Lab1_start");

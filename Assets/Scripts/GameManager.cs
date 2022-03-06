@@ -13,24 +13,24 @@ public class Response
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject letter;
-    public GameObject successMessage;
-    public GameObject successMusic;
-    public GameObject screenCenter;
-    public GameObject score;
-    public GameObject tries;
+    public GameObject letter; // GameObject que representa a letra
+    public GameObject successMessage; // GameObject que representa a mensagem de vitória
+    public GameObject successMusic; // GameObject que toca o som de sucesso (ao acertar)
+    public GameObject screenCenter; // GameObject representa o centro da tela
+    public GameObject score; // GameObject representa a caixa de texto com o score
+    public GameObject tries; // GameObject representa a caixa de texto com o número de tentativas
 
-    private GameObject scoreDisplay;
-    private GameObject triesDisplay;
+    private GameObject scoreDisplay; // Objeto que exibe a pontuação na tela
+    private GameObject triesDisplay; // Objeto que exibe as tentativas na tela
 
-    private const int maxTries = 10;
-    private int triesCount = 0;
-    private int scoreCount = 0;
-    private List<char> usedLetters = new List<char>();
+    private const int maxTries = 10; // Número máximo de tentativas
+    private int triesCount = 0; // Contador de tentativas
+    private int scoreCount = 0; // Pontuação do jogador
+    private List<char> usedLetters = new List<char>(); // Lista de letras usadas
 
-    private string word;
-    List<Letter> letters = new List<Letter>();
-    List<char> wrongLetters = new List<char>();
+    private string word; // Resposta do jogo
+    List<Letter> letters = new List<Letter>(); // Lista das letras exibidas na tela
+    List<char> wrongLetters = new List<char>(); // Lista das letras erradas
 
     // Start is called before the first frame update
     void Start()
@@ -46,7 +46,7 @@ public class GameManager : MonoBehaviour
         InputLetter();
     }
 
-    // Instancia os espa�os (interroga��es na tela) para a palavra
+    // Instancia os espaços (interrogações na tela) para a palavra
     void InitLetters()
     {
         List<char> hiddenLetters = new List<char>(this.word.ToCharArray());
@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Atualiza pontua��o e tentativas
+    // Atualiza pontuação e tentativas
     void updateScoreAndTries()
     {
         scoreDisplay.GetComponent<Text>().text = $"Score {scoreCount}";
@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
         pickRandomWord();
     }
 
-    // Escolhe palavra aleat�ria do arquivo words.txt
+    // Escolhe palavra aleatória do arquivo words.txt
     private void pickRandomWord()
     {
         StreamReader sr = new StreamReader("Assets/words.txt");
@@ -90,7 +90,7 @@ public class GameManager : MonoBehaviour
         this.word = word.ToUpper();
     }
 
-    // Instancia objetos de texto para tentativas e pontua��o
+    // Instancia objetos de texto para tentativas e pontuação
     private void createScoreAndTries()
     {
         float canvasHeight = GameObject.Find("Canvas").GetComponent<RectTransform>().rect.height;

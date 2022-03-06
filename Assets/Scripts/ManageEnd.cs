@@ -4,9 +4,10 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+// Gerencia o final do jogo
 public class ManageEnd : MonoBehaviour
 {
-    public GameObject message;
+    public GameObject message; // GameObject que exibe o texto da mensagem do resultado
     public GameObject lastHiddenWord; // Palavra selecionada
 
     // Start is called before the first frame update
@@ -28,6 +29,7 @@ public class ManageEnd : MonoBehaviour
         
     }
 
+    // Exibe mensagem de fim de jogo de acordo com o resultado (vitória ou derrota)
     public void HandleStatusCondition(string statusValue)
     {
         if(statusValue == "victory"){
@@ -44,10 +46,13 @@ public class ManageEnd : MonoBehaviour
         }
     }
 
+    // Carrega primeira cena (reiniciar o jogo)
     public void StartGameWorld()
     {
         SceneManager.LoadScene("Lab1");
     }
+
+    // Carrega cena de créditos
     public void GoToCredits()
     {
         SceneManager.LoadScene("Lab1_endCredits");

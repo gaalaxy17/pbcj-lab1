@@ -4,6 +4,7 @@ using System.Diagnostics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// Gerencia o início do jogo
 public class ManageStart : MonoBehaviour
 {
 
@@ -18,6 +19,7 @@ public class ManageStart : MonoBehaviour
         
     }
 
+    // Carrega primeira cena
     public void StartGameWorld()
     {
         SceneManager.LoadScene("Lab1");
