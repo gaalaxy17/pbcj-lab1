@@ -134,6 +134,10 @@ public class GameManager : MonoBehaviour
                 if (!found && !this.wrongLetters.Contains(input))
                 {
                     GameObject.Find("errorSound").GetComponent<AudioSource>().Play();
+                    if (Random.Range(0, 20) > 15)
+                    {
+                        GameObject.Find("ohNoSound").GetComponent<AudioSource>().Play();
+                    }
                     this.wrongLetters.Add(input);
                     triesCount++;
 

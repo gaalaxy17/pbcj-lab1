@@ -37,6 +37,7 @@ public class ManageEnd : MonoBehaviour
             this.message.GetComponent<Text>().text = "YOu WIN";
         }
         else{
+            GameObject.Find("youLoseSound").GetComponent<AudioSource>().Play();
             GameObject.Find("defeatMusic").GetComponent<AudioSource>().Play();
             this.message.GetComponent<Text>().color = Color.red; 
             this.message.GetComponent<Text>().text = "YOU LOOSE";
